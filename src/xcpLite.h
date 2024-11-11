@@ -11,24 +11,11 @@
 #error "Include dependency error!"
 #endif
 
-   
-// Transport layer type
-// The protocol layer implementation has some dependencies on the transport layer type
-// Some XCP commands are only supported on Ethernet and can not be compiled with MAX_CTO == 8 
-#define XCP_TRANSPORT_LAYER_ETH 1
-#define XCP_TRANSPORT_LAYER_CAN 0
-
 #include "xcptl_cfg.h"  // Transport layer configuration
 
 // Transport layer definitions and configuration
 #include "xcpTl.h" 
-#if XCP_TRANSPORT_LAYER_TYPE==XCP_TRANSPORT_LAYER_ETH
 #include "xcpEthTl.h"  // Ethernet transport layer specific functions
-#elif XCP_TRANSPORT_LAYER_TYPE==XCP_TRANSPORT_LAYER_CAN
-#include "xcpcantl.h"  
-#else
-#error "Define XCP_TRANSPORT_LAYER_ETH or _CAN"
-#endif
 
 // Protocol layer definitions and configuration
 #include "xcp_cfg.h"    // Protocol layer configuration
@@ -37,14 +24,20 @@
 
 
 /****************************************************************************/
-/* DAQ event information                                                    */
+/* DAQ event channel information                                            */
 /****************************************************************************/
 
-#define XCP_UNDEFINED_EVENT 0xFFFF
+#define XCP_UNDEFINED_EVENT_CHANNEL 0xFFFF
 
 #ifdef XCP_ENABLE_DAQ_EVENT_LIST
-
-#define XCP_MAX_EVENT_NAME 8
+  #ifndef XCP_MAX_EVENT_COUNT
+    #define XCP_MAX_EVENT_COUNT 16
+  #elif XCP_MAX_EVENT_COUNT > 16
+    #warning "Memory consumption of event list is high, consider reducing XCP_MAX_EVENT_COUNT or XCP_MAX_EVENT_NAME"
+  #endif
+  #ifndef XCP_MAX_EVENT_NAME
+    #define XCP_MAX_EVENT_NAME 8
+  #endif
 
 typedef struct {
     char shortName[XCP_MAX_EVENT_NAME+1]; // A2L XCP IF_DATA short event name, long name not supported
@@ -54,10 +47,11 @@ typedef struct {
     uint16_t sampleCount; // packed event sample count
     uint16_t daqList; // associated DAQ list
     uint8_t priority; // priority 0 = queued, 1 = pushing, 2 = realtime
+
 #ifdef XCP_ENABLE_MULTITHREAD_DAQ_EVENTS
     MUTEX mutex;
 #endif
-#ifdef XCP_ENABLE_SELF_TEST
+#ifdef XCP_ENABLE_TIMESTAMP_CHECK
     uint64_t time; // last event time stamp
 #endif
 } tXcpEvent;
@@ -75,14 +69,14 @@ extern void XcpStart();
 extern void XcpReset();
 
 /* XCP command processor */
-extern uint8_t XcpCommand( const uint32_t* pCommand, uint16_t len );
+extern uint8_t XcpCommand( const uint32_t* pCommand, uint8_t len );
 
 /* Disconnect, stop DAQ, flush queue */
 extern void XcpDisconnect();
 
 /* Trigger a XCP data acquisition or stimulation event */
 extern void XcpEvent(uint16_t event);
-extern uint8_t XcpEventExt(uint16_t event, const uint8_t* base, uint32_t len);
+extern uint8_t XcpEventExt(uint16_t event, const uint8_t* base);
 extern void XcpEventAt(uint16_t event, uint64_t clock);
 
 /* Send an XCP event message */
@@ -101,12 +95,12 @@ extern BOOL XcpIsDaqRunning();
 extern BOOL XcpIsDaqEventRunning(uint16_t event);
 extern uint64_t XcpGetDaqStartTime();
 extern uint32_t XcpGetDaqOverflowCount();
-#ifdef XCP_ENABLE_DAQ_CLOCK_MULTICAST
-extern uint16_t XcpGetClusterId();
-#endif
 
 /* Time synchronisation */
 #ifdef XCP_ENABLE_DAQ_CLOCK_MULTICAST
+  #if XCP_PROTOCOL_LAYER_VERSION < 0x0103
+    #error "Protocol layer version must be >=0x0103"
+  #endif
 extern uint16_t XcpGetClusterId();
 #endif
 

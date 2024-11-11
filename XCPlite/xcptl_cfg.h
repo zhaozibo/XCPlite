@@ -23,7 +23,7 @@
 #define XCPTL_QUEUED_CRM // Use transmit queue for command responces
 /*
 Benefits:
-- Unique transport layers message counters for CRM and DTO (CANape default transport layer option is "include command response")
+- Unique transport layers message counters for CRM and DTO (CANape default transport layer option us "include command response")
 - Transmit queue empty before DAQ is stopped (end of measurement consistent for all event channels)
 - socketSendTo needs not to be thread safe for a socket
 Drawbacks:
@@ -37,18 +37,10 @@ Drawbacks:
 #define XCPTL_TRANSPORT_LAYER_HEADER_SIZE 4
 
 // TL segment size and DTO size
-// Segment size is the maximum data buffer size given to send/sendTo, for UDP it is the UDP MTU
+// Segment size is the maximum data buffer size given to send/sendTo, for UDP it is the MTU
 #define XCPTL_MAX_SEGMENT_SIZE (OPTION_MTU-20-8) // UDP MTU (MTU - IP-header - UDP-header)
 #define XCPTL_MAX_DTO_SIZE (XCPTL_MAX_SEGMENT_SIZE-XCPTL_TRANSPORT_LAYER_HEADER_SIZE) // Normal ETH frame MTU - IPhdr - UDPhdr- XCPhdr, DTO size must be mod 4 
 #define XCPTL_PACKET_ALIGNMENT 4 // Packet alignment for multiple XCP transport layer packets in a XCP transport layer message
-
-// DAQ transmit queue 
-// Transmit queue size in segments, should at least be able to hold all data produced until the next call to HandleTransmitQueue
-#define XCPTL_QUEUE_SIZE 16  // array[XCPTL_QUEUE_SIZE] of tXcpMessageBuffer (XCPTL_MAX_SEGMENT_SIZE+4) 
-// Maximum queue trigger event rate
-#define XCPTL_QUEUE_TRANSMIT_CYCLE_TIME (1*CLOCK_TICKS_PER_MS)
-// Flush cycle
-#define XCPTL_QUEUE_FLUSH_CYCLE_MS 50 // Send a DTO packet at least every x ms, XCPTL_TIMEOUT_INFINITE to turn off
 
 // CTO size
 // Maximum size of a XCP command
@@ -56,5 +48,21 @@ Drawbacks:
 // CRO_SHORT_DOWNLOAD_MAX_SIZE = XCPTL_MAX_CTO_SIZE-8 should be %8==0
 // CRO_DOWNLOAD_MAX_SIZE = XCPTL_MAX_CTO_SIZE-2
 
+// DAQ transmit queue 
+// Transmit queue size in segments, should at least be able to hold all data produced until the next call to HandleTransmitQueue
+#define XCPTL_QUEUE_SIZE 64  // array[XCPTL_QUEUE_SIZE] of tXcpMessageBuffer (XCPTL_MAX_SEGMENT_SIZE+4) 
+// Maximum queue trigger event rate
+#define XCPTL_QUEUE_TRANSMIT_CYCLE_TIME (1*CLOCK_TICKS_PER_MS)
+// Flush cycle
+#define XCPTL_QUEUE_FLUSH_CYCLE_MS 50 // Send a DTO packet at least every x ms, XCPTL_TIMEOUT_INFINITE to turn off
 
+// Multicast (GET_DAQ_CLOCK_MULTICAST)
+// Use multicast time synchronisation to improve synchronisation of multiple XCP slaves
+// This is standard in XCP V1.3, but it needs to create an additional thread and socket for multicast reception
+// Has no benefit with PTP time synchronized slave and is just unnesserary effort
+// CANape expects this by default -> adjust setting in device/protocol/event/TIME_CORRELATION_GETDAQCLOCK from "multicast" to "extended response" to switch it of
+//#define XCPTL_ENABLE_MULTICAST
+#ifdef XCPTL_ENABLE_MULTICAST
+    #define XCPTL_MULTICAST_PORT 5557
+#endif
 

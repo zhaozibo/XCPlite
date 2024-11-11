@@ -9,7 +9,7 @@
 #include "xcptl_cfg.h" // Transport Layer configuration
 #include "xcp_cfg.h" // Protocoll Layer configuration
 
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
 #include "A2Lpp.hpp" // A2L generator
 #endif
 
@@ -26,7 +26,7 @@ private:
 	const uint8_t* addr;
 	uint16_t port;
 
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
 	A2L* a2lFile;
 #endif	
 
@@ -101,7 +101,7 @@ public:
 	uint32_t getA2lAddr(const uint8_t* p); // Get A2L addr from pointer	
 	
 	// Optional: A2L generation
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
 	A2L* createA2L(const char* projectName); 
 	void closeA2L();
 	A2L* getA2L() { return a2lFile; }
@@ -125,7 +125,7 @@ protected:
 	uint16_t xcpInstanceId;
 	const char* xcpInstanceName;
 
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
 	// Create components (A2L STRUCTURE_COMPONENTS) components of inheriting classes
 	virtual void xcpCreateA2lTypedefComponents(A2L* a2l) { (void)a2l; };
 #endif
@@ -140,7 +140,7 @@ public:
 	void xcpEvent();
 	void xcpEvent(uint8_t* base);
 	
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
 	// Create the typedef (A2L TYPEDEF_STRUCTURE) for this class, calls xcpCreateA2lTypedefComponents to add components 
 	void xcpCreateA2lTypedef();
 

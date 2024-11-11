@@ -17,8 +17,8 @@
 #include "A2L.h"
 
 static FILE* gA2lFile = NULL;
-static uint16_t gA2lFixedEvent = XCP_UNDEFINED_EVENT;
-static uint16_t gA2lDefaultEvent = XCP_UNDEFINED_EVENT;
+static uint16_t gA2lFixedEvent = XCP_UNDEFINED_EVENT_CHANNEL;
+static uint16_t gA2lDefaultEvent = XCP_UNDEFINED_EVENT_CHANNEL;
 
 static uint32_t gA2lMeasurements;
 static uint32_t gA2lParameters;
@@ -310,7 +310,7 @@ BOOL A2lOpen(const char *filename, const char* projectName ) {
 
 	DBG_PRINTF3("\nCreate A2L %s\n", filename);
 	gA2lFile = NULL;
-	gA2lFixedEvent = XCP_UNDEFINED_EVENT;
+	gA2lFixedEvent = XCP_UNDEFINED_EVENT_CHANNEL;
 	gA2lMeasurements = gA2lParameters = gA2lTypedefs = gA2lInstances = gA2lConversions = gA2lComponents = 0;
 	gA2lFile = fopen(filename, "w");
 	if (gA2lFile == 0) {
@@ -345,7 +345,7 @@ void A2lCreate_MOD_PAR(uint32_t startAddr, uint32_t size, char *epk) {
 	fprintf(gA2lFile, gA2lMemorySegment, startAddr, size);
 	DBG_PRINTF3("  A2L MOD_PAR MEMORY_SEGMENT 1: 0x%08X %u\n", startAddr, size);
 	fprintf(gA2lFile, "/end MOD_PAR\n\n");
-#if OPTION_ENABLE_DBG_PRINTS
+#ifdef OPTION_ENABLE_DBG_PRINTS
 	if (epk) DBG_PRINTF3("  A2L MOD_PAR EPK \"%s\" 0x%08X\n", epk, ApplXcpGetAddr((const uint8_t*)epk));
 #endif
 }
@@ -450,10 +450,10 @@ void A2lCreate_CAN_IF_DATA(BOOL useCANFD, uint16_t croId, uint16_t dtoId, uint32
 void A2lCreateMeasurement_IF_DATA() {
 
 	assert(gA2lFile != NULL);
-	if (gA2lFixedEvent != XCP_UNDEFINED_EVENT) {
+	if (gA2lFixedEvent != XCP_UNDEFINED_EVENT_CHANNEL) {
 		fprintf(gA2lFile, " /begin IF_DATA XCP /begin DAQ_EVENT FIXED_EVENT_LIST EVENT 0x%X /end DAQ_EVENT /end IF_DATA", gA2lFixedEvent);
 	}
-	else if (gA2lDefaultEvent != XCP_UNDEFINED_EVENT) {
+	else if (gA2lDefaultEvent != XCP_UNDEFINED_EVENT_CHANNEL) {
 		fprintf(gA2lFile, " /begin IF_DATA XCP /begin DAQ_EVENT VARIABLE DEFAULT_EVENT_LIST EVENT 0x%X /end DAQ_EVENT /end IF_DATA", gA2lDefaultEvent);
 	}
 }
@@ -487,11 +487,11 @@ uint16_t A2lGetFixedEvent() {
 }
 
 void A2lRstDefaultEvent() {
-	gA2lDefaultEvent = XCP_UNDEFINED_EVENT;
+	gA2lDefaultEvent = XCP_UNDEFINED_EVENT_CHANNEL;
 }
 
 void A2lRstFixedEvent() {
-	gA2lFixedEvent = XCP_UNDEFINED_EVENT;
+	gA2lFixedEvent = XCP_UNDEFINED_EVENT_CHANNEL;
 }
 
 
@@ -555,7 +555,7 @@ void A2lCreateMeasurement_(const char* instanceName, const char* name, int32_t t
 	printAddrExt(ext);	
 	printPhysUnit(unit);
 	fprintf(gA2lFile, " READ_WRITE");
-#if OPTION_ENABLE_A2L_SYMBOL_LINKS
+#ifdef OPTION_ENABLE_A2L_SYMBOL_LINKS
 	fprintf(gA2lFile, " SYMBOL_LINK \"%s\" %u", A2lGetSymbolName(instanceName, name), 0);
 #else
 	(void)symbolLink;
@@ -571,7 +571,7 @@ void A2lCreateMeasurementArray_(const char* instanceName, const char* name, int3
 	assert(gA2lFile != NULL);
 	fprintf(gA2lFile, "/begin CHARACTERISTIC %s \"\" VAL_BLK 0x%X R_%s 0 NO_COMPU_METHOD %s %s MATRIX_DIM %u", A2lGetSymbolName(instanceName, name), addr, getType(type), getTypeMin(type), getTypeMax(type), dim);
 	printAddrExt(ext);
-#if OPTION_ENABLE_A2L_SYMBOL_LINKS
+#ifdef OPTION_ENABLE_A2L_SYMBOL_LINKS
 	fprintf(gA2lFile, " SYMBOL_LINK \"%s\" %u", A2lGetSymbolName(instanceName, name), 0);
 #endif
 	A2lCreateMeasurement_IF_DATA();
@@ -586,7 +586,7 @@ void A2lCreateParameterWithLimits_(const char* name, int32_t type, uint8_t ext, 
 	fprintf(gA2lFile, "/begin CHARACTERISTIC %s \"%s\" VALUE 0x%X R_%s 0 NO_COMPU_METHOD %g %g",	name, comment, addr, getType(type), min, max);
 	printPhysUnit(unit);
 	printAddrExt(ext);
-#if OPTION_ENABLE_A2L_SYMBOL_LINKS
+#ifdef OPTION_ENABLE_A2L_SYMBOL_LINKS
 	fprintf(gA2lFile, " SYMBOL_LINK \"%s\" %u", name, 0);
 #endif
 	fprintf(gA2lFile, " /end CHARACTERISTIC\n");
@@ -599,7 +599,7 @@ void A2lCreateParameter_(const char* name, int32_t type, uint8_t ext, uint32_t a
 	fprintf(gA2lFile, "/begin CHARACTERISTIC %s \"%s\" VALUE 0x%X R_%s 0 NO_COMPU_METHOD %s %s",	name, comment, addr, getType(type), getTypeMin(type), getTypeMax(type));
 	printPhysUnit(unit);
 	printAddrExt(ext);
-#if OPTION_ENABLE_A2L_SYMBOL_LINKS
+#ifdef OPTION_ENABLE_A2L_SYMBOL_LINKS
 	fprintf(gA2lFile, " SYMBOL_LINK \"%s\" %u", name, 0);
 #endif
 	fprintf(gA2lFile, " /end CHARACTERISTIC\n");
@@ -616,7 +616,7 @@ void A2lCreateMap_(const char* name, int32_t type, uint8_t ext, uint32_t addr, u
 		name, comment, addr, getType(type), getTypeMin(type), getTypeMax(type), xdim, xdim-1, xdim,  ydim, ydim-1, ydim);
 	printPhysUnit(unit);
 	printAddrExt(ext);
-#if OPTION_ENABLE_A2L_SYMBOL_LINKS
+#ifdef OPTION_ENABLE_A2L_SYMBOL_LINKS
 	fprintf(gA2lFile, " SYMBOL_LINK \"%s\" %u", name, 0);
 #endif
 	fprintf(gA2lFile, " /end CHARACTERISTIC\n");
@@ -632,7 +632,7 @@ void A2lCreateCurve_(const char* name, int32_t type, uint8_t ext, uint32_t addr,
 		name, comment, addr, getType(type), getTypeMin(type), getTypeMax(type),  xdim, xdim-1, xdim);
 	printPhysUnit(unit);
 	printAddrExt(ext);
-#if OPTION_ENABLE_A2L_SYMBOL_LINKS
+#ifdef OPTION_ENABLE_A2L_SYMBOL_LINKS
 	fprintf(gA2lFile, " SYMBOL_LINK \"%s\" %u", name, 0);
 #endif
 	fprintf(gA2lFile, " /end CHARACTERISTIC\n");
@@ -645,7 +645,7 @@ void A2lParameterGroup(const char* name, int count, ...) {
 	va_list ap;
 
 	assert(gA2lFile != NULL);
-	fprintf(gA2lFile, "/begin GROUP %s \"\"", name);
+	fprintf(gA2lFile, "/begin GROUP %s \"\" ROOT", name);
 	fprintf(gA2lFile, " /begin REF_CHARACTERISTIC\n");
 	va_start(ap, count);
 	for (int i = 0; i < count; i++) {
@@ -660,7 +660,7 @@ void A2lParameterGroup(const char* name, int count, ...) {
 void A2lParameterGroupFromList(const char* name, const char* pNames[], size_t count) {
 
 	assert(gA2lFile != NULL);
-	fprintf(gA2lFile, "/begin GROUP %s \"\"", name);
+	fprintf(gA2lFile, "/begin GROUP %s \"\" ROOT", name);
 	fprintf(gA2lFile, " /begin REF_CHARACTERISTIC\n");
 	for (size_t i = 0; i < count; i++) {
 		fprintf(gA2lFile, " %s", pNames[i]);
@@ -675,7 +675,7 @@ void A2lMeasurementGroup(const char* name, int count, ...) {
 	va_list ap;
 
 	assert(gA2lFile != NULL);
-	fprintf(gA2lFile, "/begin GROUP %s \"\"", name);
+	fprintf(gA2lFile, "/begin GROUP %s \"\" ROOT", name);
 	fprintf(gA2lFile, " /begin REF_MEASUREMENT");
 	va_start(ap, count);
 	for (int i = 0; i < count; i++) {
@@ -690,13 +690,13 @@ void A2lMeasurementGroup(const char* name, int count, ...) {
 void A2lMeasurementGroupFromList(const char *name, char* names[], uint32_t count) {
 
 	assert(gA2lFile != NULL);
-	fprintf(gA2lFile, "/begin GROUP %s \"\" \n", name);
+	fprintf(gA2lFile, "/begin GROUP %s \"\" ROOT", name);
 	fprintf(gA2lFile, " /begin REF_MEASUREMENT");
 	for (uint32_t i1 = 0; i1 < count; i1++) {
 		fprintf(gA2lFile, " %s", names[i1]);
 	}
 	fprintf(gA2lFile, " /end REF_MEASUREMENT");
-	fprintf(gA2lFile, "\n/end GROUP\n");
+	fprintf(gA2lFile, "\n/end GROUP\n\n");
 }
 
 

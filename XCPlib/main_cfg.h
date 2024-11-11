@@ -52,7 +52,7 @@
 
 // A2L generation
 #define OPTION_ENABLE_A2L_GEN           ON // Enable A2L generation
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
 #define OPTION_A2L_NAME                 "XCPlite"     // A2L name 
 #define OPTION_A2L_FILE_NAME            "XCPlite.a2l" // A2L filename 
 #endif

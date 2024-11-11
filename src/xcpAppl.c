@@ -15,24 +15,24 @@
 #include "platform.h"
 #include "dbg_print.h"
 #include "xcpLite.h"
-#if OPTION_ENABLE_XCP_CLASS
+#ifdef OPTION_ENABLE_XCP_CLASS
 #include "xcp.hpp"
 #else
-#if OPTION_ENABLE_CAL_SEGMENT
+#ifdef OPTION_ENABLE_CAL_SEGMENT
 #include "ecu.h"
 #endif
 #endif
     
 
-#if OPTION_ENABLE_DBG_PRINTS
-uint8_t gDebugLevel = OPTION_DEBUG_LEVEL;
+#ifdef OPTION_ENABLE_DBG_PRINTS
+uint8_t gDebugLevel = OPTION_DEFAULT_DBG_LEVEL;
 #endif
 
 /**************************************************************************/
 // General Callbacks from XCPlite.c
 /**************************************************************************/
 
-#if OPTION_ENABLE_XCP_CLASS
+#ifdef OPTION_ENABLE_XCP_CLASS
 
 BOOL ApplXcpConnect() {
     return Xcp::getInstance()->onConnect();
@@ -146,7 +146,7 @@ uint8_t* ApplXcpGetPointer(uint8_t addr_ext, uint32_t addr) {
 #endif
 
     p = ApplXcpGetBaseAddr() + addr;
-#if OPTION_ENABLE_CAL_SEGMENT
+#ifdef OPTION_ENABLE_CAL_SEGMENT
     p = ecuParAddrMapping(p);
 #endif
     
@@ -355,7 +355,7 @@ void ApplXcpInitBaseAddressList()
 // Calibration page switching
 /**************************************************************************/
 
-#if OPTION_ENABLE_CAL_SEGMENT
+#ifdef OPTION_ENABLE_CAL_SEGMENT
 
 // segment = 0
 // RAM = page 0, FLASH = page 1

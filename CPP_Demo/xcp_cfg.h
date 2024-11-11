@@ -20,10 +20,13 @@
 // Driver version (GET_COMM_MODE_INFO)
 #define XCP_DRIVER_VERSION 0x01
 
+// Enable Ethernet specific protocol layer commands
+#define XCP_ENABLE_PROTOCOL_LAYER_ETH
+
 // Protocol layer version
 // #define XCP_PROTOCOL_LAYER_VERSION 0x0101
-#define XCP_PROTOCOL_LAYER_VERSION 0x0103  // GET_DAQ_CLOCK_MULTICAST, GET_TIME_CORRELATION_PROPERTIES
-// #define XCP_PROTOCOL_LAYER_VERSION 0x0104  // PACKED_MODE, CC_START_STOP_SYNCH prepare
+// #define XCP_PROTOCOL_LAYER_VERSION 0x0103  // GET_DAQ_CLOCK_MULTICAST, GET_TIME_CORRELATION_PROPERTIES
+#define XCP_PROTOCOL_LAYER_VERSION 0x0104  // PACKED_MODE, CC_START_STOP_SYNCH prepare
 
 
 /*----------------------------------------------------------------------------*/
@@ -31,10 +34,10 @@
 
 // Use addr_ext XCP_ADDR_EXT_ABS to indicate absulute addr format (ApplXcpGetBaseAddr()+(uint32_t)addr) 
 #define XCP_ENABLE_ABS_ADDRESSING
-#define XCP_ADDR_EXT_ABS 0x01 // Absolute address format 
+#define XCP_ADDR_EXT_ABS 0x00 // Absolute address format 
 
 // Use addr_ext XCP_ADDR_EXT_DYN to indicate relative addr format (event<<16)|offset 
-#if OPTION_ENABLE_XCP_CLASS
+#ifdef OPTION_ENABLE_XCP_CLASS
   #define XCP_ENABLE_DYN_ADDRESSING
   #define XCP_ADDR_EXT_DYN 0x02 // Relative address format
 #endif
@@ -66,7 +69,7 @@
 /*----------------------------------------------------------------------------*/
 /* GET_ID command */
 
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
 #define XCP_ENABLE_IDT_A2L_UPLOAD // Upload A2L via XCP UPLOAD
 #endif
 
@@ -75,7 +78,7 @@
 
 // #define XCP_ENABLE_DAQ_EVENT_INFO // Enable XCP_GET_EVENT_INFO, if this is enabled, A2L file event information will be ignored
 #define XCP_ENABLE_DAQ_EVENT_LIST // Enable event list
-#define XCP_MAX_EVENT 256 // Maximum number of events, size of event table
+#define XCP_MAX_EVENT_COUNT 16 // Maximum number of events, size of event table
 #define XCP_ENABLE_MULTITHREAD_EVENTS // Make XcpEvent thread safe also for same event from different thread
 // #define XCP_ENABLE_PACKED_MODE // Enable packed mode emulation
 
@@ -108,18 +111,8 @@
 //-------------------------------------------------------------------------------
 // Debug 
 
-// Debug console prints
-#if !defined(OPTION_ENABLE_DBG_PRINTS) || !defined(OPTION_DEBUG_LEVEL)
-  #warning "Please define OPTION_ENABLE_DBG_PRINTS and OPTION_DEBUG_LEVEL in main_cfg.h to ON or OFF"
-#else
-#if OPTION_ENABLE_DBG_PRINTS
-  #define XCP_ENABLE_DEBUG_PRINTS
-  #define XCP_DBG_LEVEL OPTION_DEBUG_LEVEL
-#else
-  #undef XCP_ENABLE_DEBUG_PRINTS
-  #undef XCP_DBG_LEVEL OPTION_DEBUG_LEVEL
-#endif
-#endif
+// Enable logging
+#define OPTION_ENABLE_DBG_PRINTS
 
 // Enable extended error checks, performance penalty !!!
 #define XCP_ENABLE_TEST_CHECKS

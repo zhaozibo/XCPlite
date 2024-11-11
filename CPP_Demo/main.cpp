@@ -52,7 +52,7 @@ uint32_t gCycleTime = 10000; // us
 
 
 
-#if OPTION_ENABLE_DYNAMIC_DEMO
+#ifdef OPTION_ENABLE_DYNAMIC_DEMO
 
 //-----------------------------------------------------------------------------------------------------
 // Demo 
@@ -69,7 +69,7 @@ class SigGen : public XcpObject {
 protected:
 
     // Create A2L desription of this instance
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
     virtual void xcpCreateA2lTypedefComponents(A2L* a2l) {
         a2l->createDynTypedefMeasurementComponent(value);
         a2l->createDynTypedefParameterComponent(par_ampl);
@@ -144,11 +144,11 @@ int main(int argc, char* argv[]) {
 
     // A2L generation (optional)
     // Declare all measurement variable and calibration parameters
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
     A2L* a2l = xcp->createA2L("CPP_DEMO");
 
     // Declare calibration parameters in global address space
-    a2l->createTypedefBegin(gSignalParameters, "This is the global signal parameters structure type"); // global struct signal_parameters signal_parameters
+    a2l->createTypedefBegin(sSignalParameters, "This is the global signal parameters structure type"); // global struct signal_parameters signal_parameters
     a2l->createTypedefParameterComponent(gSignalParameters,ampl);
     a2l->createTypedefParameterComponent(gSignalParameters,offset);
     a2l->createTypedefParameterComponent(gSignalParameters,phase);
@@ -157,7 +157,7 @@ int main(int argc, char* argv[]) {
     // a2l->createParameterWithLimits(gSignalParameters.phase, "Phase of sinus signal in s", "s", 0, 10); // global signal_parameters.phase, this is an alternative way to define components of global structs
     a2l->createParameterWithLimits(gPeriod, "Period of sinus signal in s", "s", 0, 10); // global double period
     a2l->createParameterWithLimits(gCycleTime, "Cycle time of demo event loop in us", "us", 0, 1000000); // global uint32_t cycleTime
-#if OPTION_ENABLE_DBG_PRINTS
+#ifdef OPTION_ENABLE_DBG_PRINTS
     a2l->createParameter(gDebugLevel, "Console output verbosity level", ""); // Create a calibration parameter to control the debug output verbosity
 #endif
     // Declare measurement variables in global address space
@@ -167,7 +167,7 @@ int main(int argc, char* argv[]) {
 #endif // OPTION_ENABLE_A2L_GEN
 
     //Demo: Measure and calibrate multiple instances of a class (optional)
-#if OPTION_ENABLE_DYNAMIC_DEMO
+#ifdef OPTION_ENABLE_DYNAMIC_DEMO
 
     // Create 10 different SigGen sine signal generator task instances with calibration parameters and dynamic addressing
     // The constructor of SigGen will create an instance and an associated XCP event for each
@@ -178,14 +178,14 @@ int main(int argc, char* argv[]) {
     }
     
     // Create A2L description for class SigGen, use any instance to do this, function can't be static
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
     sigGen[0]->xcpCreateA2lTypedef();
 #endif
 
 #endif // OPTION_ENABLE_DYNAMIC_DEMO
 
     // Optional: Finalize and close A2l, this would be done automatic on XCP connect, to make the A2L file immediately available, its done explicitly here
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
     xcp->closeA2L();
 #endif // OPTION_ENABLE_A2L_GEN
 

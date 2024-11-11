@@ -15,7 +15,7 @@
 #include "platform.h"
 #include "xcpLite.h"
 #include "xcpEthServer.h"
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
 #include "A2L.h"
 #endif
 
@@ -55,12 +55,9 @@ int main() {
     // Initialize high resolution clock for measurement event timestamping
     if (!clockInit()) return 0;
 
-    // Init network
-    if (!socketStartup()) return 0;
-    
     // Initialize the XCP Server
     uint8_t ipAddr[] = OPTION_SERVER_ADDR;
-    if (!XcpEthServerInit(ipAddr, OPTION_SERVER_PORT, OPTION_USE_TCP)) return 0;
+    if (!XcpEthServerInit(ipAddr, OPTION_SERVER_PORT, FALSE)) return 0;
 
     // Test address conversion functions
     // uint8_t* ApplXcpGetPointer(uint8_t addr_ext, uint32_t addr);
@@ -73,7 +70,7 @@ int main() {
     assert(ampl == 100.0);
 
     // Create ASAM A2L description file for measurement signals, calibration variables, events and communication parameters 
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
     if (!A2lOpen(OPTION_A2L_FILE_NAME, OPTION_A2L_NAME)) return 0;
     event = XcpCreateEvent("mainLoop", 0, 0, 0, 0);
 #ifdef __cplusplus // In C++, A2L objects datatype is detected at run time
@@ -91,7 +88,7 @@ int main() {
     A2lCreatePhysMeasurement(channel1, A2L_TYPE_DOUBLE, "Sinus demo signal", 1.0, 0.0, "V");
     A2lCreateMeasurement(counter, A2L_TYPE_UINT32, "Event counter");
 #endif
-    A2lCreate_ETH_IF_DATA(OPTION_USE_TCP, ipAddr, OPTION_SERVER_PORT);
+    A2lCreate_ETH_IF_DATA(FALSE, ipAddr, OPTION_SERVER_PORT);
     A2lClose();
 #endif    
 

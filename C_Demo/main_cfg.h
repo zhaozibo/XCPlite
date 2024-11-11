@@ -10,39 +10,61 @@
 // Application configuration:
 // XCP configuration is in xcp_cfg.h (Protocol Layer) and xcptl_cfg.h (Transport Layer)
 
-#define ON 1
-#define OFF 0
+/*
+  XCP library build options:
 
-// Set clock resolution (for clock function in platform.c)
-//#define CLOCK_USE_APP_TIME_US
-#define CLOCK_USE_UTC_TIME_NS
+  // Logging
+  #define OPTION_ENABLE_DBG_PRINTS    Enable debug prints
+  #define OPTION_DEFAULT_DBG_LEVEL  Default log level: 1 - Error, 2 - Warn, 3 - Info, 4 - Trace, 5 - Debug
+
+  // Clock
+  #define OPTION_CLOCK_EPOCH_ARB      Arbitrary epoch or since 1.1.1970
+  #define OPTION_CLOCK_EPOCH_PTP      
+  
+  #define OPTION_CLOCK_TICKS_1NS      Resolution 1ns or 1us, granularity depends on platform
+  #define OPTION_CLOCK_TICKS_1US
+
+  // XCP  
+  #define OPTION_ENABLE_TCP
+  #define OPTION_ENABLE_UDP
+  #define OPTION_MTU                  UDP MTU
+  #define OPTION_QUEUE_SIZE           Size of the DAQ queue in XCP DTO/CRM packets (not messages as in V1.x) 
+  #define OPTION_DAQ_MEM_SIZE         Size of memory for DAQ setup in bytes
+  #define OPTION_ENABLE_A2L_UPLOAD    Enable GET_ID A2L upload
+    
+*/
+
+// Ethernet Transport Layer
+#define OPTION_ENABLE_UDP
+//#define OPTION_ENABLE_TCP
+#define OPTION_MTU                      1500            // Ethernet MTU
+#define OPTION_SERVER_PORT              5555            // Default UDP port
+#define OPTION_SERVER_ADDR              {127,0,0,1}     // IP addr to bind, 0.0.0.0 = ANY
+
+#if defined(_LINUX) && !defined(_MACOS)
+  #define XCP_SERVER_FORCEFULL_TERMINATION // @@@@
+#endif
 
 // Platform options
 #define PLATFORM_ENABLE_GET_LOCAL_ADDR
 #define PLATFORM_ENABLE_KEYBOARD
 
-// Ethernet Server
-// TCP or/and UDP server enabled
-#define XCPTL_ENABLE_TCP
-#define XCPTL_ENABLE_UDP
-#define XCP_SERVER_FORCEFULL_TERMINATION // Otherwise use gracefull server thread termination in xcplib
-
-// Ethernet Transport Layer
-#define OPTION_USE_TCP                  OFF
-#define OPTION_MTU                      1500            // Ethernet MTU
-#define OPTION_SERVER_PORT              5555            // Default UDP port
-#define OPTION_SERVER_ADDR              {127,0,0,1}     // IP addr to bind, 0.0.0.0 = ANY
+// Clock
+#define OPTION_CLOCK_EPOCH_ARB
+#define OPTION_CLOCK_TICKS_1NS // OPTION_CLOCK_TICKS_1NS or OPTION_CLOCK_TICKS_1US
 
 // Enable demo how to create a calibration segment with page switching
-#define OPTION_ENABLE_CAL_SEGMENT ON
+#define OPTION_ENABLE_CAL_SEGMENT 
 
-// A2L generation
-#define OPTION_ENABLE_A2L_GEN ON  // Enable A2L generation
-#if OPTION_ENABLE_A2L_GEN
-  #define OPTION_A2L_NAME                "C_Demo"     // A2L name 
-  #define OPTION_A2L_FILE_NAME           "C_Demo.a2l" // A2L filename 
+// Enable A2L generation and upload
+#define OPTION_ENABLE_A2L_GEN // Enable A2L generation
+#define OPTION_ENABLE_A2L_UPLOAD
+#ifdef OPTION_ENABLE_A2L_GEN
+  #define OPTION_A2L_NAME "C_Demo" // A2L name 
+  #define OPTION_A2L_FILE_NAME "C_Demo.a2l" // A2L filename 
 #endif
 
 // Debug prints
-#define OPTION_ENABLE_DBG_PRINTS        ON
-#define OPTION_DEBUG_LEVEL              3 // 1 - Error, 2 - Warn, 3 - Info, 4 - Trace, 5 - Debug 
+#define OPTION_ENABLE_DBG_PRINTS        
+#define OPTION_DEFAULT_DBG_LEVEL 4 // 1 - Error, 2 - Warn, 3 - Info, 4 - Trace, 5 - Debug 
+

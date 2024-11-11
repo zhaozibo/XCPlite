@@ -42,7 +42,7 @@ Xcp* Xcp::getInstance()
 
 
 Xcp::Xcp() : useTCP(FALSE), usePTP(FALSE), port(0), addr()
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
 , a2lFile(NULL)
 #endif
 {
@@ -58,7 +58,7 @@ BOOL Xcp::init(const uint8_t* addr0, uint16_t port0, BOOL useTCP0, BOOL usePTP0)
     port = port0;
     useTCP = useTCP0;
     usePTP = usePTP0;
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
     a2lFile = NULL;
 #endif
 
@@ -92,7 +92,7 @@ BOOL Xcp::onConnect() {
 
     // if A2L file is not closed yet, finalize it and make it available
     // to be able to offer the file for upload, it has to be finalized here at latest 
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
     closeA2L();
 #endif
 
@@ -133,7 +133,7 @@ void Xcp::event(uint16_t event) {
 }
 
 void Xcp::eventExt(uint16_t event, uint8_t* base) {
-    XcpEventExt(event, base, 0);
+    XcpEventExt(event, base);
 }
 
 void Xcp::eventAt(uint16_t event, uint64_t clock) {
@@ -168,7 +168,7 @@ std::vector<Xcp::XcpEventDescriptor>* Xcp::getEventList() {
     return l;
 }
 
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
 
 uint32_t Xcp::getA2lAddr(const uint8_t* p) { // Get A2L addr from pointer
     return ApplXcpGetAddr(p); 
@@ -212,14 +212,14 @@ XcpObject::XcpObject(const char* instanceName, const char* className, int classS
 
     // Create this instance in A2L
     printf("Create instance %s of %s\n", instanceName, className);
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
     A2L* a2l = Xcp::getInstance()->getA2L();
     a2l->setFixedEvent(xcpInstanceId);
     a2l->createDynTypedefInstance(instanceName, className, "");
 #endif
 }
 
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
 void XcpObject::xcpCreateA2lTypedef() {
 
     // Create a A2L typedef for this class

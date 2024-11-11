@@ -14,7 +14,7 @@
 #include "platform.h"
 #include "dbg_print.h"
 #include "xcpLite.h"
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
 #include "A2L.h"
 #endif
 #include "ecu.h"
@@ -75,7 +75,7 @@ struct ecuPar {
 };
 
 
-#if OPTION_ENABLE_CAL_SEGMENT
+#ifdef OPTION_ENABLE_CAL_SEGMENT
 const
 #endif
 struct ecuPar ecuPar = {
@@ -98,7 +98,7 @@ struct ecuPar ecuPar = {
 };
 
 
-#if OPTION_ENABLE_CAL_SEGMENT
+#ifdef OPTION_ENABLE_CAL_SEGMENT
 /*
 Calibration parameters are collected in a C struct
 This is used to create a RAM and a FLASH version (const) of the parameter set
@@ -121,7 +121,7 @@ char* ecuGetEPK() {
     return (char*)ecuPar.epk;
 }
 
-#if OPTION_ENABLE_CAL_SEGMENT
+#ifdef OPTION_ENABLE_CAL_SEGMENT
 
 // Calibration page handling
 // page 0 is RAM, page 1 is FLASH
@@ -164,7 +164,7 @@ void ecuInit() {
     ecuStartTime = clockGet();
 
     // Initialize calibration parameters
-#if OPTION_ENABLE_CAL_SEGMENT
+#ifdef OPTION_ENABLE_CAL_SEGMENT
     ecuParInit(); // Initializes parameters in RAM calibration segment
     ecuParSetCalPage(RAM); // Switch to RAM calibration segment 
 #endif
@@ -185,13 +185,13 @@ void ecuInit() {
 }
 
 
-#if OPTION_ENABLE_A2L_GEN
+#ifdef OPTION_ENABLE_A2L_GEN
 
 // Create demo A2L file 
 void ecuCreateA2lDescription() {
 
     // Calibration Memory Segment
-#if OPTION_ENABLE_CAL_SEGMENT  
+#ifdef OPTION_ENABLE_CAL_SEGMENT  
     A2lCreate_MOD_PAR(ApplXcpGetAddr((const uint8_t*)&ecuPar), sizeof(struct ecuPar), (char*)ecuPar.epk);
 #endif
 

@@ -19,8 +19,8 @@
 
 // Commandline Options and Defaults
 
-#if OPTION_ENABLE_TCP
-BOOL gOptionUseTCP = OPTION_USE_TCP;
+#ifdef OPTION_ENABLE_TCP
+BOOL gOptionUseTCP = TRUE;
 #endif
 uint16_t gOptionPort = OPTION_SERVER_PORT;
 uint8_t gOptionBindAddr[4] = OPTION_SERVER_ADDR;
@@ -45,7 +45,7 @@ void cmdline_usage(const char* appName) {
         "    -log <x>         Set console log output verbosity to x (default: 2)\n"
         "    -bind <ipaddr>   XCP server adapter IP address to bind (default is ANY (0.0.0.0))\n"
         "    -port <portname> XCP server port (default is 5555)\n"
-#if OPTION_ENABLE_TCP
+#ifdef OPTION_ENABLE_TCP
 #if OPTION_USE_TCP
         "    -udp             Use UDP for XCP\n"
 #else
@@ -70,7 +70,7 @@ BOOL cmdline_parser(int argc, char* argv[]) {
             cmdline_usage(argv[0]);
             return FALSE;
         }
-#if OPTION_ENABLE_DBG_PRINTS
+#ifdef OPTION_ENABLE_DBG_PRINTS
         else if (strcmp(argv[i], "-log") == 0) {
           if (++i < argc) {
             unsigned int l = 0;
@@ -96,7 +96,7 @@ BOOL cmdline_parser(int argc, char* argv[]) {
                 }
             }
         }
-#if OPTION_ENABLE_TCP
+#ifdef OPTION_ENABLE_TCP
         else if (strcmp(argv[i], "-tcp") == 0) {
             gOptionUseTCP = TRUE;
             printf("Use TCP\n");

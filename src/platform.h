@@ -5,7 +5,7 @@
 */
 
 #ifndef __MAIN_CFG_H__
-#error "Include dependency error!"
+#error "Include dependency error! options not set"
 #endif
 
 //-------------------------------------------------------------------------------
@@ -81,9 +81,10 @@ typedef HANDLE tXcpThread;
 #elif defined(_LINUX) // Linux
 
 typedef pthread_t tXcpThread;
-#define create_thread(h,t) pthread_create(h, NULL, t, NULL);
-#define join_thread(h) pthread_join(h,NULL);
+#define create_thread(h,t) pthread_create(h, NULL, t, NULL)
+#define join_thread(h) pthread_join(h,NULL)
 #define cancel_thread(h) { pthread_detach(h); pthread_cancel(h); }
+#define yield_thread() sched_yield()
 
 #endif
 
@@ -91,7 +92,7 @@ typedef pthread_t tXcpThread;
 //-------------------------------------------------------------------------------
 // Platform independant socket functions
 
-#if defined(XCPTL_ENABLE_UDP) || defined(XCPTL_ENABLE_TCP)
+#if defined(OPTION_ENABLE_TCP) || defined(OPTION_ENABLE_UDP)
 
 #ifdef _LINUX // Linux sockets
 
@@ -144,7 +145,7 @@ extern BOOL socketOpen(SOCKET* sp, BOOL useTCP, BOOL nonBlocking, BOOL reuseaddr
 extern BOOL socketBind(SOCKET sock, uint8_t* addr, uint16_t port);
 extern BOOL socketJoin(SOCKET sock, uint8_t* maddr);
 extern BOOL socketListen(SOCKET sock);
-extern SOCKET socketAccept(SOCKET sock, uint8_t addr[]);
+extern SOCKET socketAccept(SOCKET sock, uint8_t* addr);
 extern int16_t socketRecv(SOCKET sock, uint8_t* buffer, uint16_t bufferSize, BOOL waitAll);
 extern int16_t socketRecvFrom(SOCKET sock, uint8_t* buffer, uint16_t bufferSize, uint8_t* srcAddr, uint16_t* srcPort, uint64_t *time);
 extern int16_t socketSend(SOCKET sock, const uint8_t* buffer, uint16_t bufferSize);
@@ -158,28 +159,25 @@ extern BOOL socketGetLocalAddr(uint8_t* mac, uint8_t* addr);
 #endif
 
 //-------------------------------------------------------------------------------
-// Clock
+// High resolution clock
 
-// Clock resolution and epoch
-#if !defined(CLOCK_USE_UTC_TIME_NS) && !defined(CLOCK_USE_APP_TIME_US)
-  // Default
-  #define CLOCK_USE_UTC_TIME_NS // Use ns timestamps relative to 1.1.1970 (TAI monotonic - no backward jumps)
-  //#define CLOCK_USE_APP_TIME_US // Use arbitrary us timestamps relative to application start
-#endif
+#ifdef OPTION_CLOCK_TICKS_1NS
 
-#ifdef CLOCK_USE_UTC_TIME_NS
-
-#define CLOCK_TICKS_PER_M  (1000000000ULL*60)
-#define CLOCK_TICKS_PER_S  1000000000
-#define CLOCK_TICKS_PER_MS 1000000
-#define CLOCK_TICKS_PER_US 1000
-#define CLOCK_TICKS_PER_NS 1
+  #define CLOCK_TICKS_PER_M  (1000000000ULL*60)
+  #define CLOCK_TICKS_PER_S  1000000000
+  #define CLOCK_TICKS_PER_MS 1000000
+  #define CLOCK_TICKS_PER_US 1000
+  #define CLOCK_TICKS_PER_NS 1
 
 #else
 
-#define CLOCK_TICKS_PER_S  1000000
-#define CLOCK_TICKS_PER_MS 1000
-#define CLOCK_TICKS_PER_US 1
+  #ifndef OPTION_CLOCK_TICKS_1US 
+    #error "Please define OPTION_CLOCK_TICKS_1NS or OPTION_CLOCK_TICKS_1US"
+  #endif
+
+  #define CLOCK_TICKS_PER_S  1000000
+  #define CLOCK_TICKS_PER_MS 1000
+  #define CLOCK_TICKS_PER_US 1
 
 #endif
 

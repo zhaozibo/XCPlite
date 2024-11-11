@@ -11,7 +11,7 @@
 
 
 
-#if OPTION_ENABLE_TCP
+#ifdef OPTION_ENABLE_TCP
 extern BOOL gOptionUseTCP;
 #else
 #define gOptionUseTCP FALSE

@@ -48,7 +48,7 @@
 
 // #define XCP_ENABLE_DAQ_EVENT_INFO // Enable XCP_GET_EVENT_INFO, if this is enabled, A2L file event information will be ignored
 #define XCP_ENABLE_DAQ_EVENT_LIST // Enable event list
-#define XCP_MAX_EVENT 16 // Maximum number of events, size of event table
+#define XCP_MAX_EVENT_COUNT 16 // Maximum number of events, size of event table
 // #define XCP_ENABLE_MULTITHREAD_EVENTS // Make XcpEvent thread safe for same event coming from different threads
 // #define XCP_ENABLE_PACKED_MODE // Enable packed mode 
 
@@ -77,7 +77,7 @@
 #if !defined(OPTION_ENABLE_DBG_PRINTS) || !defined(OPTION_DEBUG_LEVEL)
   #error "Please define OPTION_ENABLE_DBG_PRINTS and OPTION_DEBUG_LEVEL in main_cfg.h to ON or OFF"
 #else
-#if OPTION_ENABLE_DBG_PRINTS
+#ifdef OPTION_ENABLE_DBG_PRINTS
   #define XCP_ENABLE_DEBUG_PRINTS
   #define XCP_DBG_LEVEL OPTION_DEBUG_LEVEL
 #else

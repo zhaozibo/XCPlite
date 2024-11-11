@@ -6,7 +6,7 @@
 */
 
 
-#ifdef XCP_ENABLE_CAL_PAGE
+#ifdef OPTION_ENABLE_CAL_SEGMENT
 extern uint8_t ecuParGetCalPage();
 extern void ecuParSetCalPage(uint8_t page);
 extern uint8_t* ecuParAddrMapping(uint8_t* a);
