@@ -85,7 +85,7 @@ uint8_t XcpTlCommand( uint16_t msgLen, const uint8_t* msgBuf) {
     /* Connected */
     if (connected) {
         if (p->dlc>XCPTL_MAX_CTO_SIZE) return CRC_CMD_SYNTAX;
-        return XcpCommand((const uint32_t*)&p->packet[0], p->dlc); // Handle command
+        return XcpCommand((const uint32_t*)&p->packet[0], (uint8_t)p->dlc); // Handle command
     }
 
     /* Not connected yet */

@@ -1047,7 +1047,7 @@ static void XcpSendResponse(const tXcpCto* crm, uint8_t crmLen) {
 }
 
 // Transmit multicast command response
-#ifdef PLATFORM_ENABLE_GET_LOCAL_ADDR
+#ifdef XCPTL_ENABLE_MULTICAST
 static void XcpSendMulticastResponse( const tXcpCto* crm, uint8_t crmLen, uint8_t *addr, uint16_t port) {
 
   XcpEthTlSendMulticastCrm((const uint8_t*)crm, crmLen, addr, port);
@@ -2246,9 +2246,9 @@ static void XcpPrintCmd(const tXcpCto* cmdBuf) {
 
 #endif // >= 0x0104
 
+#ifdef XCP_ENABLE_DAQ_CLOCK_MULTICAST     
      case CC_TRANSPORT_LAYER_CMD:
         switch (CRO_TL_SUBCOMMAND) {
-#ifdef XCP_ENABLE_DAQ_CLOCK_MULTICAST     
           case CC_TL_GET_DAQ_CLOCK_MULTICAST:
               {
                   printf("GET_DAQ_CLOCK_MULTICAST counter=%u, cluster=%u\n", CRO_GET_DAQ_CLOCK_MCAST_COUNTER, CRO_GET_DAQ_CLOCK_MCAST_CLUSTER_IDENTIFIER);
@@ -2258,9 +2258,9 @@ static void XcpPrintCmd(const tXcpCto* cmdBuf) {
           case CC_TL_GET_SERVER_ID:
             printf("GET_SERVER_ID %u:%u:%u:%u:%u\n", CRO_TL_GET_SERVER_ID_ADDR(0), CRO_TL_GET_SERVER_ID_ADDR(1), CRO_TL_GET_SERVER_ID_ADDR(2), CRO_TL_GET_SERVER_ID_ADDR(3), CRO_TL_GET_SERVER_ID_PORT );
             break;
-#endif // XCP_ENABLE_DAQ_CLOCK_MULTICAST
           default:  printf("UNKNOWN TRANSPORT LAYER COMMAND %02X\n", CRO_TL_SUBCOMMAND); break;
         } // switch (CRO_TL_SUBCOMMAND)
+#endif // XCP_ENABLE_DAQ_CLOCK_MULTICAST
 
     } // switch (CRO_CMD)
 }
@@ -2397,9 +2397,10 @@ static void XcpPrintRes(const tXcpCto* crm) {
             break;
 #endif
 
+#if defined(XCP_ENABLE_DAQ_CLOCK_MULTICAST)  ||  defined(XCPTL_ENABLE_MULTICAST)
         case CC_TRANSPORT_LAYER_CMD:
             switch (gXcp.CmdLast1) {
-#ifdef XCP_ENABLE_DAQ_CLOCK_MULTICAST
+    #ifdef XCP_ENABLE_DAQ_CLOCK_MULTICAST
             case CC_TL_GET_DAQ_CLOCK_MULTICAST:
                 {
                     if (isLegacyMode()) {
@@ -2421,16 +2422,17 @@ static void XcpPrintRes(const tXcpCto* crm) {
                 }
 
                 break;
-#endif // XCP_ENABLE_DAQ_CLOCK_MULTICAST
+  #endif // XCP_ENABLE_DAQ_CLOCK_MULTICAST
 
-#ifdef XCPTL_ENABLE_MULTICAST
+  #ifdef XCPTL_ENABLE_MULTICAST
             case CC_TL_GET_SERVER_ID:
               printf("<- %u.%u.%u.%u:%u %s\n",
                 CRM_TL_GET_SERVER_ID_ADDR(0), CRM_TL_GET_SERVER_ID_ADDR(1), CRM_TL_GET_SERVER_ID_ADDR(2), CRM_TL_GET_SERVER_ID_ADDR(3), CRM_TL_GET_SERVER_ID_PORT, &CRM_TL_GET_SERVER_ID_ID);
               break;
-#endif
+  #endif
             }
             break;
+#endif
 
         default:
             if (DBG_LEVEL >= 5) {

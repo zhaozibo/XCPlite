@@ -149,7 +149,7 @@ void XcpEthTlSendMulticastCrm(const uint8_t* packet, uint16_t packet_size, const
 
 //------------------------------------------------------------------------------
 
-static int handleXcpCommand(tXcpCtoMessage *p, uint8_t *srcAddr, uint16_t srcPort) {
+static BOOL handleXcpCommand(tXcpCtoMessage *p, uint8_t *srcAddr, uint16_t srcPort) {
 
     int connected;
 
@@ -175,7 +175,7 @@ static int handleXcpCommand(tXcpCtoMessage *p, uint8_t *srcAddr, uint16_t srcPor
                 DBG_PRINTF_WARNING("WARNING: message from unknown new master %u.%u.%u.%u, disconnecting!\n", srcAddr[0], srcAddr[1], srcAddr[2], srcAddr[3]);
                 XcpDisconnect();
                 gXcpTl.MasterAddrValid = FALSE;
-                return 1; // Disconnect
+                return TRUE; // Disconnect
             }
 
             // Check unicast master udp port, not allowed to change
@@ -183,11 +183,11 @@ static int handleXcpCommand(tXcpCtoMessage *p, uint8_t *srcAddr, uint16_t srcPor
                 DBG_PRINTF_WARNING("WARNING: master port changed from %u to %u, disconnecting!\n", gXcpTl.MasterPort, srcPort);
                 XcpDisconnect();
                 gXcpTl.MasterAddrValid = FALSE;
-                return 1; // Disconnect
+                return TRUE; // Disconnect
             }
         }
 #endif // UDP
-        if (p->dlc>XCPTL_MAX_CTO_SIZE) return 0;
+        if (p->dlc>XCPTL_MAX_CTO_SIZE) return FALSE;
         XcpCommand((const uint32_t*)&p->packet[0], (uint8_t)p->dlc); // Handle command
     }
 
@@ -222,7 +222,7 @@ static int handleXcpCommand(tXcpCtoMessage *p, uint8_t *srcAddr, uint16_t srcPor
     } // not connected before
 #endif // UDP
 
-    return 1; // Ok
+    return TRUE; // Ok
 }
 
 

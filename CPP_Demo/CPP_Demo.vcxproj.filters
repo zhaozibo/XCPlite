@@ -29,11 +29,15 @@
     <ClCompile Include="..\src\options.c">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\xcpTl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\xcpTlQueue.c">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main_cfg.h" />
-    <ClInclude Include="xcptl_cfg.h" />
-    <ClInclude Include="xcp_cfg.h" />
     <ClInclude Include="..\src\platform.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -71,6 +75,15 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="main.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\xcpTlQueue.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\xcp_cfg.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\xcptl_cfg.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

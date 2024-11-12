@@ -21,7 +21,7 @@
 typedef struct {
     uint16_t dlc;    // XCP TL header lenght
     uint16_t ctr;    // XCP TL Header message counter
-    uint8_t data[];                 
+    uint8_t data[1];                 
 } tXcpDtoMessage;
 #pragma pack(pop)
 

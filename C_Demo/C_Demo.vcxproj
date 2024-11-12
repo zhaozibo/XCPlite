@@ -162,6 +162,8 @@
     <ClCompile Include="..\src\xcpEthServer.c" />
     <ClCompile Include="..\src\xcpEthTl.c" />
     <ClCompile Include="..\src\xcpLite.c" />
+    <ClCompile Include="..\src\xcpTl.c" />
+    <ClCompile Include="..\src\xcpTlQueue.c" />
     <ClCompile Include="ecu.c" />
     <ClCompile Include="main.c" />
   </ItemGroup>
@@ -176,11 +178,12 @@
     <ClInclude Include="..\src\xcpEthTl.h" />
     <ClInclude Include="..\src\xcpLite.h" />
     <ClInclude Include="..\src\xcpTl.h" />
+    <ClInclude Include="..\src\xcpTlQueue.h" />
+    <ClInclude Include="..\src\xcptl_cfg.h" />
+    <ClInclude Include="..\src\xcp_cfg.h" />
     <ClInclude Include="ecu.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="main_cfg.h" />
-    <ClInclude Include="xcptl_cfg.h" />
-    <ClInclude Include="xcp_cfg.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
