@@ -68,9 +68,6 @@ int main(int argc, char* argv[]) {
     printf("\nXCP on Ethernet C Demo\n");
     if (!cmdline_parser(argc, argv)) return 0;
 
-    // Initialize high resolution clock for measurement event timestamping
-    if (!clockInit()) return 0;
-
     // Initialize the XCP Server
     if (!XcpEthServerInit(gOptionBindAddr, gOptionPort, gOptionUseTCP)) return 0;
 

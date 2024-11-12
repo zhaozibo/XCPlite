@@ -52,9 +52,6 @@ int main() {
 
     printf("\nXCPlite - Simple Demo\n");
 
-    // Initialize high resolution clock for measurement event timestamping
-    if (!clockInit()) return 0;
-
     // Initialize the XCP Server
     uint8_t ipAddr[] = OPTION_SERVER_ADDR;
     if (!XcpEthServerInit(ipAddr, OPTION_SERVER_PORT, FALSE)) return 0;

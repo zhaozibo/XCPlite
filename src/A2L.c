@@ -225,21 +225,40 @@ const char* A2lGetSymbolName(const char* instanceName, const char* name) {
 	}
 }
 
-static const char* getType(int32_t type) {
+static const char* getA2lTypeName(int32_t type) {
 	const char* types;
 	switch (type) {
-	case A2L_TYPE_INT8:    types = "SBYTE";  break;
-	case A2L_TYPE_INT16:   types = "SWORD";  break;
-	case A2L_TYPE_INT32:   types = "SLONG";  break;
-	case A2L_TYPE_INT64:   types = "A_INT64";  break;
-	case A2L_TYPE_UINT8:   types = "UBYTE";  break;
-	case A2L_TYPE_UINT16:  types = "UWORD";  break;
-	case A2L_TYPE_UINT32:  types = "ULONG";  break;
-	case A2L_TYPE_UINT64:  types = "A_UINT64";  break;
-	case A2L_TYPE_FLOAT:   types = "FLOAT32_IEEE";  break;
-	case A2L_TYPE_DOUBLE:  types = "FLOAT64_IEEE";  break;
-	default: 
-		types = NULL;
+		case A2L_TYPE_INT8:    types = "SBYTE";  break;
+		case A2L_TYPE_INT16:   types = "SWORD";  break;
+		case A2L_TYPE_INT32:   types = "SLONG";  break;
+		case A2L_TYPE_INT64:   types = "A_INT64";  break;
+		case A2L_TYPE_UINT8:   types = "UBYTE";  break;
+		case A2L_TYPE_UINT16:  types = "UWORD";  break;
+		case A2L_TYPE_UINT32:  types = "ULONG";  break;
+		case A2L_TYPE_UINT64:  types = "A_UINT64";  break;
+		case A2L_TYPE_FLOAT:   types = "FLOAT32_IEEE";  break;
+		case A2L_TYPE_DOUBLE:  types = "FLOAT64_IEEE";  break;
+		default: 
+			types = NULL;
+	}
+	return types;
+}
+
+static const char* getTypeName(int32_t type) {
+	const char* types;
+	switch (type) {
+		case A2L_TYPE_INT8:    types = "S8";  break;
+		case A2L_TYPE_INT16:   types = "S16";  break;
+		case A2L_TYPE_INT32:   types = "S32";  break;
+		case A2L_TYPE_INT64:   types = "S64";  break;
+		case A2L_TYPE_UINT8:   types = "U8";  break;
+		case A2L_TYPE_UINT16:  types = "U16";  break;
+		case A2L_TYPE_UINT32:  types = "U32";  break;
+		case A2L_TYPE_UINT64:  types = "U64";  break;
+		case A2L_TYPE_FLOAT:   types = "F32";  break;
+		case A2L_TYPE_DOUBLE:  types = "F64";  break;
+		default: 
+			types = NULL;
 	}
 	return types;
 }
@@ -247,13 +266,13 @@ static const char* getType(int32_t type) {
 static const char* getTypeMin(int32_t type) {
 	const char* min;
 	switch (type) {
-	case A2L_TYPE_INT8:		min = "-128"; break; 
-	case A2L_TYPE_INT16:	min = "-32768"; break; 
-	case A2L_TYPE_INT32:	min = "-2147483648"; break; 
-	case A2L_TYPE_INT64:	min = "-1E12"; break; 
-	case A2L_TYPE_FLOAT:	min = "-1E12"; break;
-	case A2L_TYPE_DOUBLE:	min = "-1E12"; break;
-	default:                min = "0";
+		case A2L_TYPE_INT8:		min = "-128"; break; 
+		case A2L_TYPE_INT16:	min = "-32768"; break; 
+		case A2L_TYPE_INT32:	min = "-2147483648"; break; 
+		case A2L_TYPE_INT64:	min = "-1E12"; break; 
+		case A2L_TYPE_FLOAT:	min = "-1E12"; break;
+		case A2L_TYPE_DOUBLE:	min = "-1E12"; break;
+		default:                min = "0";
 	}
 	return min;
 }
@@ -261,13 +280,13 @@ static const char* getTypeMin(int32_t type) {
 static const char* getTypeMax(int32_t type) {
 	const char* max;
 	switch (type) {
-	case A2L_TYPE_INT8:	   max = "127"; break;
-	case A2L_TYPE_INT16:   max = "32767"; break;
-	case A2L_TYPE_INT32:   max = "2147483647"; break;
-	case A2L_TYPE_UINT8:   max = "255"; break;
-	case A2L_TYPE_UINT16:  max = "65535"; break;
-	case A2L_TYPE_UINT32:  max = "4294967295"; break;
-	default:               max = "1E12";
+		case A2L_TYPE_INT8:	   max = "127"; break;
+		case A2L_TYPE_INT16:   max = "32767"; break;
+		case A2L_TYPE_INT32:   max = "2147483647"; break;
+		case A2L_TYPE_UINT8:   max = "255"; break;
+		case A2L_TYPE_UINT16:  max = "65535"; break;
+		case A2L_TYPE_UINT32:  max = "4294967295"; break;
+		default:               max = "1E12";
 	}
 	return max;
 }
@@ -275,13 +294,13 @@ static const char* getTypeMax(int32_t type) {
 static const char* getPhysMin(int32_t type, double factor, double offset) {
 	double value = 0.0;
 	switch (type) {
-	case A2L_TYPE_INT8:		value = -128; break;
-	case A2L_TYPE_INT16:	value = -32768; break;
-	case A2L_TYPE_INT32:	value = -(double)2147483648; break;
-	case A2L_TYPE_INT64:	value = -1E12; break;
-	case A2L_TYPE_FLOAT:	value = -1E12; break;
-	case A2L_TYPE_DOUBLE:	value = -1E12; break;
-	default:                value = 0.0;
+		case A2L_TYPE_INT8:		value = -128; break;
+		case A2L_TYPE_INT16:	value = -32768; break;
+		case A2L_TYPE_INT32:	value = -(double)2147483648; break;
+		case A2L_TYPE_INT64:	value = -1E12; break;
+		case A2L_TYPE_FLOAT:	value = -1E12; break;
+		case A2L_TYPE_DOUBLE:	value = -1E12; break;
+		default:                value = 0.0;
 	}
 
 	static char str[20];
@@ -292,13 +311,13 @@ static const char* getPhysMin(int32_t type, double factor, double offset) {
 static const char* getPhysMax(int32_t type, double factor, double offset) {
 	double value = 0.0;
 	switch (type) {
-	case A2L_TYPE_INT8:		value = 127; break;
-	case A2L_TYPE_INT16:	value = 32767; break;
-	case A2L_TYPE_INT32:	value = 2147483647; break;
-	case A2L_TYPE_UINT8:  value = 255; break;
-	case A2L_TYPE_UINT16: value = 65535; break;
-	case A2L_TYPE_UINT32: value = 4294967295; break;
-	default:                value = 1E12;
+		case A2L_TYPE_INT8:   value = 127; break;
+		case A2L_TYPE_INT16:  value = 32767; break;
+		case A2L_TYPE_INT32:  value = 2147483647; break;
+		case A2L_TYPE_UINT8:  value = 255; break;
+		case A2L_TYPE_UINT16: value = 65535; break;
+		case A2L_TYPE_UINT32: value = 4294967295; break;
+		default:              value = 1E12;
 	}
 	static char str[20];
 	snprintf(str, 20, "%f", factor * value + offset);
@@ -323,11 +342,12 @@ BOOL A2lOpen(const char *filename, const char* projectName ) {
 
 	// Create standard record layouts for elementary types
 	for (int i = -10; i <= +10; i++) {
-		const char* t = getType(i);
-		if (t != NULL) {
-			fprintf(gA2lFile, "/begin RECORD_LAYOUT R_%s FNC_VALUES 1 %s ROW_DIR DIRECT /end RECORD_LAYOUT\n", t, t);
-			fprintf(gA2lFile, "/begin TYPEDEF_MEASUREMENT M_%s \"\" %s NO_COMPU_METHOD 0 0 %s %s /end TYPEDEF_MEASUREMENT\n", t, t, getTypeMin(i), getTypeMax(i));
-			fprintf(gA2lFile, "/begin TYPEDEF_CHARACTERISTIC C_%s \"\" VALUE R_%s 0 NO_COMPU_METHOD %s %s /end TYPEDEF_CHARACTERISTIC\n", t, t, getTypeMin(i), getTypeMax(i));
+		const char* at = getA2lTypeName(i);
+		if (at != NULL) {
+			const char* t = getTypeName(i);
+			fprintf(gA2lFile, "/begin RECORD_LAYOUT %s FNC_VALUES 1 %s ROW_DIR DIRECT /end RECORD_LAYOUT\n", t, at);
+			fprintf(gA2lFile, "/begin TYPEDEF_MEASUREMENT M_%s \"\" %s NO_COMPU_METHOD 0 0 %s %s /end TYPEDEF_MEASUREMENT\n", t, at, getTypeMin(i), getTypeMax(i));
+			fprintf(gA2lFile, "/begin TYPEDEF_CHARACTERISTIC C_%s \"\" VALUE %s 0 NO_COMPU_METHOD %s %s /end TYPEDEF_CHARACTERISTIC\n", t, t, getTypeMin(i), getTypeMax(i));
 		}
 	}
 	fprintf(gA2lFile, "\n");
@@ -505,14 +525,14 @@ void A2lTypedefBegin_(const char* name, uint32_t size, const char* comment) {
 void A2lTypedefMeasurementComponent_(const char* name, int32_t type, uint32_t offset) {
 
 	assert(gA2lFile != NULL);
-	fprintf(gA2lFile, "  /begin STRUCTURE_COMPONENT %s M_%s 0x%X SYMBOL_TYPE_LINK \"%s\" /end STRUCTURE_COMPONENT\n", name, getType(type), offset, name);
+	fprintf(gA2lFile, "  /begin STRUCTURE_COMPONENT %s M_%s 0x%X SYMBOL_TYPE_LINK \"%s\" /end STRUCTURE_COMPONENT\n", name, getTypeName(type), offset, name);
 	gA2lComponents++;
 }
 
 void A2lTypedefParameterComponent_(const char* name, int32_t type, uint32_t offset) {
 
 	assert(gA2lFile != NULL);
-	fprintf(gA2lFile, "  /begin STRUCTURE_COMPONENT %s C_%s 0x%X SYMBOL_TYPE_LINK \"%s\" /end STRUCTURE_COMPONENT\n", name, getType(type), offset, name);
+	fprintf(gA2lFile, "  /begin STRUCTURE_COMPONENT %s C_%s 0x%X SYMBOL_TYPE_LINK \"%s\" /end STRUCTURE_COMPONENT\n", name, getTypeName(type), offset, name);
 	gA2lComponents++;
 }
 
@@ -551,7 +571,7 @@ void A2lCreateMeasurement_(const char* instanceName, const char* name, int32_t t
 	}
   
 	//fprintf(gA2lFile, "/begin MEASUREMENT %s \"%s\" %s %s.Conversion 0 0 %s %s ECU_ADDRESS 0x%X", A2lGetSymbolName(instanceName, name), comment, getType(type), conv, getTypeMin(type), getTypeMax(type), addr);
-	fprintf(gA2lFile, "/begin MEASUREMENT %s \"%s\" %s %s.Conversion 0 0 %s %s ECU_ADDRESS 0x%X", A2lGetSymbolName(instanceName, name), comment, getType(type), conv, getPhysMin(type, factor, offset), getPhysMax(type, factor, offset), addr);
+	fprintf(gA2lFile, "/begin MEASUREMENT %s \"%s\" %s %s.Conversion 0 0 %s %s ECU_ADDRESS 0x%X", A2lGetSymbolName(instanceName, name), comment, getA2lTypeName(type), conv, getPhysMin(type, factor, offset), getPhysMax(type, factor, offset), addr);
 	printAddrExt(ext);	
 	printPhysUnit(unit);
 	fprintf(gA2lFile, " READ_WRITE");
@@ -569,7 +589,7 @@ void A2lCreateMeasurement_(const char* instanceName, const char* name, int32_t t
 void A2lCreateMeasurementArray_(const char* instanceName, const char* name, int32_t type, int dim, uint8_t ext, uint32_t addr) {
 
 	assert(gA2lFile != NULL);
-	fprintf(gA2lFile, "/begin CHARACTERISTIC %s \"\" VAL_BLK 0x%X R_%s 0 NO_COMPU_METHOD %s %s MATRIX_DIM %u", A2lGetSymbolName(instanceName, name), addr, getType(type), getTypeMin(type), getTypeMax(type), dim);
+	fprintf(gA2lFile, "/begin CHARACTERISTIC %s \"\" VAL_BLK 0x%X %s 0 NO_COMPU_METHOD %s %s MATRIX_DIM %u", A2lGetSymbolName(instanceName, name), addr, getTypeName(type), getTypeMin(type), getTypeMax(type), dim);
 	printAddrExt(ext);
 #ifdef OPTION_ENABLE_A2L_SYMBOL_LINKS
 	fprintf(gA2lFile, " SYMBOL_LINK \"%s\" %u", A2lGetSymbolName(instanceName, name), 0);
@@ -583,7 +603,7 @@ void A2lCreateMeasurementArray_(const char* instanceName, const char* name, int3
 void A2lCreateParameterWithLimits_(const char* name, int32_t type, uint8_t ext, uint32_t addr, const char* comment, const char* unit, double min, double max) {
 
 	assert(gA2lFile != NULL);
-	fprintf(gA2lFile, "/begin CHARACTERISTIC %s \"%s\" VALUE 0x%X R_%s 0 NO_COMPU_METHOD %g %g",	name, comment, addr, getType(type), min, max);
+	fprintf(gA2lFile, "/begin CHARACTERISTIC %s \"%s\" VALUE 0x%X %s 0 NO_COMPU_METHOD %g %g",	name, comment, addr, getTypeName(type), min, max);
 	printPhysUnit(unit);
 	printAddrExt(ext);
 #ifdef OPTION_ENABLE_A2L_SYMBOL_LINKS
@@ -596,7 +616,7 @@ void A2lCreateParameterWithLimits_(const char* name, int32_t type, uint8_t ext, 
 void A2lCreateParameter_(const char* name, int32_t type, uint8_t ext, uint32_t addr, const char* comment, const char* unit) {
 
 	assert(gA2lFile != NULL);
-	fprintf(gA2lFile, "/begin CHARACTERISTIC %s \"%s\" VALUE 0x%X R_%s 0 NO_COMPU_METHOD %s %s",	name, comment, addr, getType(type), getTypeMin(type), getTypeMax(type));
+	fprintf(gA2lFile, "/begin CHARACTERISTIC %s \"%s\" VALUE 0x%X %s 0 NO_COMPU_METHOD %s %s",	name, comment, addr, getTypeName(type), getTypeMin(type), getTypeMax(type));
 	printPhysUnit(unit);
 	printAddrExt(ext);
 #ifdef OPTION_ENABLE_A2L_SYMBOL_LINKS
@@ -610,10 +630,10 @@ void A2lCreateMap_(const char* name, int32_t type, uint8_t ext, uint32_t addr, u
 
 	assert(gA2lFile != NULL);
 	fprintf(gA2lFile,
-		"/begin CHARACTERISTIC %s \"%s\" MAP 0x%X R_%s 0 NO_COMPU_METHOD %s %s"
+		"/begin CHARACTERISTIC %s \"%s\" MAP 0x%X %s 0 NO_COMPU_METHOD %s %s"
 		" /begin AXIS_DESCR FIX_AXIS NO_INPUT_QUANTITY NO_COMPU_METHOD  %u 0 %u FIX_AXIS_PAR_DIST 0 1 %u /end AXIS_DESCR"
 		" /begin AXIS_DESCR FIX_AXIS NO_INPUT_QUANTITY NO_COMPU_METHOD  %u 0 %u FIX_AXIS_PAR_DIST 0 1 %u /end AXIS_DESCR",
-		name, comment, addr, getType(type), getTypeMin(type), getTypeMax(type), xdim, xdim-1, xdim,  ydim, ydim-1, ydim);
+		name, comment, addr, getTypeName(type), getTypeMin(type), getTypeMax(type), xdim, xdim-1, xdim,  ydim, ydim-1, ydim);
 	printPhysUnit(unit);
 	printAddrExt(ext);
 #ifdef OPTION_ENABLE_A2L_SYMBOL_LINKS
@@ -627,9 +647,9 @@ void A2lCreateCurve_(const char* name, int32_t type, uint8_t ext, uint32_t addr,
 
 	assert(gA2lFile != NULL);
 	fprintf(gA2lFile,
-		"/begin CHARACTERISTIC %s \"%s\" CURVE 0x%X R_%s 0 NO_COMPU_METHOD %s %s"
+		"/begin CHARACTERISTIC %s \"%s\" CURVE 0x%X %s 0 NO_COMPU_METHOD %s %s"
 		" /begin AXIS_DESCR FIX_AXIS NO_INPUT_QUANTITY NO_COMPU_METHOD  %u 0 %u FIX_AXIS_PAR_DIST 0 1 %u /end AXIS_DESCR",
-		name, comment, addr, getType(type), getTypeMin(type), getTypeMax(type),  xdim, xdim-1, xdim);
+		name, comment, addr, getTypeName(type), getTypeMin(type), getTypeMax(type),  xdim, xdim-1, xdim);
 	printPhysUnit(unit);
 	printAddrExt(ext);
 #ifdef OPTION_ENABLE_A2L_SYMBOL_LINKS

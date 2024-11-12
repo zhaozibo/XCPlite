@@ -71,8 +71,8 @@
 #define OPTION_ENABLE_A2L_GEN // Enable A2L generation
 #define OPTION_ENABLE_A2L_UPLOAD
 #ifdef OPTION_ENABLE_A2L_GEN
-  #define OPTION_A2L_NAME "C_Demo" // A2L name 
-  #define OPTION_A2L_FILE_NAME "C_Demo.a2l" // A2L filename 
+  #define OPTION_A2L_NAME "CPP_Demo" // A2L name 
+  #define OPTION_A2L_FILE_NAME "CPP_Demo.a2l" // A2L filename 
 #endif
 
 // Debug prints
